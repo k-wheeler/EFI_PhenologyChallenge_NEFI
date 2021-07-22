@@ -149,6 +149,8 @@ for(i in 1:nrow(siteData)){
   for(yr in 1:dataFinal$N){
     CDD <- 0
     for(i in 1:sofs[yr]){
+      print(dim(dataFinal$baseTemp))
+      print(dataFinal$baseTemp)
       if(dataFinal$TairMu[i,yr]<dataFinal$baseTemp){
         CDD <- CDD + (dataFinal$baseTemp - dataFinal$TairMu[i,yr])
       }
