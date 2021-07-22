@@ -2,6 +2,12 @@ library(PhenoForecast)
 library(PhenologyBayesModeling)
 library(rjags)
 library(runjags)
+library(doParallel)
+
+n.cores <- 8
+
+#register the cores.
+registerDoParallel(cores=n.cores)
 #siteData <- read.csv("PhenologyForecastData/phenologyForecastSites.csv",header=TRUE)
 siteData <- read.csv("data/phenologyForecastSites2.csv",header=TRUE)
 dataDirectory <- "data/"
@@ -11,9 +17,46 @@ baseTemp <- 20
 nchain=5
 
 siteData <- siteData[seq(13,20),] #Thinned for NEON sites
-i=1
+
+variableNames <- c("p.PC","p.proc","x","b0","b1","b2","a","CDDtrigger")#,"Dtrigger")
+
+generalModel = "
+    model {
+### Data Models for complete years
+for(yr in 1:(N)){
+for(i in 1:n){
+p[i,yr] ~ dnorm(x[i,yr],p.PC)
+}
+}
+
+#### Process Model
+for(yr in 1:(N)){
+for(i in 2:n){
+Tair[i,yr] ~ dnorm(TairMu[i,yr],TairPrec[i,yr])
+CDDs[i,yr] <- ifelse(TairMu[i,yr]<baseTemp,CDDs[(i-1),yr]+baseTemp - Tair[i,yr],CDDs[(i-1),yr])
+xmu[i,yr] <- x[(i-1),yr] + ifelse(CDDs[i,yr]>CDDtrigger,(b0 + (b1 * x[(i-1),yr]) + (b2 * x[(i-1),yr] ** 2)),a)
+x[i,yr] ~ dnorm(xmu[i,yr],p.proc) T(0,0.999)
+}
+}
+
+#### Priors
+for(yr in 1:N){ ##Initial Conditions
+x[1,yr] ~ dbeta(x1.a[yr],x1.b[yr])
+CDDs[1,yr] <- 0
+}
+p.PC ~ dgamma(s1.PC,s2.PC)
+p.proc ~ dgamma(s1.proc,s2.proc)
+CDDtrigger ~ dunif(CDDtrigger.lower,CDDtrigger.upper)
+
+a ~ dunif(a_lower,a_upper)
+b0 ~ dunif(b0_lower,b0_upper)
+b2 ~ dunif(b2_lower,b2_upper)
+b1 ~ dunif(b1_lower,b1_upper) 
+}
+"
+
 #for(i in 1:nrow(siteData)){
-  
+foreach(i=1:nrow(siteData)) %dopar% {
   siteName <- as.character(siteData[i,1])
   print(siteName)
   ERA5dataFolder <- paste("/projectnb/dietzelab/kiwheel/ERA5/Data/",siteName,"/",sep="")
@@ -164,42 +207,6 @@ i=1
                        b2=rnorm(1,-0.5,0.1))
   }
   
-  variableNames <- c("p.PC","p.proc","x","b0","b1","b2","a","CDDtrigger")#,"Dtrigger")
-  
-  generalModel = "
-    model {
-  ### Data Models for complete years
-  for(yr in 1:(N)){
-  for(i in 1:n){
-  p[i,yr] ~ dnorm(x[i,yr],p.PC)
-  }
-  }
-  
-  #### Process Model
-  for(yr in 1:(N)){
-  for(i in 2:n){
-  Tair[i,yr] ~ dnorm(TairMu[i,yr],TairPrec[i,yr])
-  CDDs[i,yr] <- ifelse(TairMu[i,yr]<baseTemp,CDDs[(i-1),yr]+baseTemp - Tair[i,yr],CDDs[(i-1),yr])
-  xmu[i,yr] <- x[(i-1),yr] + ifelse(CDDs[i,yr]>CDDtrigger,(b0 + (b1 * x[(i-1),yr]) + (b2 * x[(i-1),yr] ** 2)),a)
-  x[i,yr] ~ dnorm(xmu[i,yr],p.proc) T(0,0.999)
-  }
-  }
-  
-  #### Priors
-  for(yr in 1:N){ ##Initial Conditions
-  x[1,yr] ~ dbeta(x1.a[yr],x1.b[yr])
-  CDDs[1,yr] <- 0
-  }
-  p.PC ~ dgamma(s1.PC,s2.PC)
-  p.proc ~ dgamma(s1.proc,s2.proc)
-  CDDtrigger ~ dunif(CDDtrigger.lower,CDDtrigger.upper)
-  
-  a ~ dunif(a_lower,a_upper)
-  b0 ~ dunif(b0_lower,b0_upper)
-  b2 ~ dunif(b2_lower,b2_upper)
-  b1 ~ dunif(b1_lower,b1_upper) 
-  }
-  "
   save(dataFinal,file=paste(siteName,"_EFIChallengeCalibration_dataFinal.RData",sep=""))
   
   j.model   <- jags.model(file = textConnection(generalModel),
@@ -217,5 +224,5 @@ i=1
   out.burn2$predict <- window(out.burn$predict,thin=thinAmount)
   out.burn <- out.burn2
   save(out.burn,file = outputFileName)
-#}
+}
 
