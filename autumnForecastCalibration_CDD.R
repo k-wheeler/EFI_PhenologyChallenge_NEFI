@@ -77,6 +77,7 @@ for(i in 1:nrow(siteData)){
   #print(min(TairMu,na.rm = TRUE))
   dat2$TairMu <- TairMu + (0-min(na.omit(TairMu))) ##Done to make sure all temperatures are >= 0 
   print(length(na.omit(dat2$TairMu)))
+  print(length((dat2$TairMu)))
   baseTempOrig <- baseTemp
   baseTemp <- baseTemp + (0-min(na.omit(TairMu)))
   print("basetemp:")
