@@ -18,6 +18,8 @@ for(i in 1:nrow(siteData)){
   print(siteName)
   ERA5dataFolder <- paste("/projectnb/dietzelab/kiwheel/ERA5/Data/",siteName,"/",sep="")
   outputFileName <- paste(siteName,"_EFI_ForecastChallenge_calibration_varBurn.RData",sep="")
+  load(file=paste(dataDirectory,siteName,"_phenopixOutputs.RData",sep=""))
+  fittedDat=allDat
   
   lat <- as.numeric(siteData[i,2])
   long <- as.numeric(siteData[i,3])
@@ -86,6 +88,7 @@ for(i in 1:nrow(siteData)){
   days2 <- matrix(nrow=nrowNum,ncol=0)
   
   finalYrs <- numeric()
+  sofs <- numeric()
   
   for(i in (lubridate::year(as.Date(dat2$dates[1]))):lubridate::year(as.Date(dat2$dates[length(dat2$dates)]))){##I know this includes the forecasted stuff, but it shouldn't really matter because of the JAGS model setup
     #print(i)
@@ -98,9 +101,10 @@ for(i in 1:nrow(siteData)){
     finalYrs <- c(finalYrs,i)
     TairMu <- cbind(TairMu,subDat$TairMu)
     TairPrec <- cbind(TairPrec,subDat$TairPrec)
+    sofs <- c(sofs,(fittedDat[valNum,'FallStartDay']-212))
   }
   
-  dataFinal <- list(p=p,years=finalYrs)
+  dataFinal <- list(p=p,years=finalYrs,sofMean=mean(sofs))
   dataFinal$n <- nrowNum
   dataFinal$N <- ncol(dataFinal$p)
   dataFinal$CDDtrigger.lower <- 0
