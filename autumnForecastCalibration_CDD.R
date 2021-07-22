@@ -70,7 +70,9 @@ for(i in 1:nrow(siteData)){
   #print(head(datTairEns))
   print("Finished loading ERA5")
   TairMu <- apply(X=datTairEns,MARGIN=2,FUN=mean,na.rm=TRUE)
-  print(range(TairMu,na.rm = TRUE))
+  print("Tairmu:")
+  print(TairMu)
+  #print(range(TairMu,na.rm = TRUE))
   TairPrec <- 1/apply(X=datTairEns,MARGIN=2,FUN=var,na.rm=TRUE)
   #print(min(TairMu,na.rm = TRUE))
   dat2$TairMu <- TairMu + (0-min(TairMu)) ##Done to make sure all temperatures are >= 0 
