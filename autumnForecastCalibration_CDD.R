@@ -75,14 +75,14 @@ for(i in 1:nrow(siteData)){
   #print(range(TairMu,na.rm = TRUE))
   TairPrec <- 1/apply(X=datTairEns,MARGIN=2,FUN=var,na.rm=TRUE)
   #print(min(TairMu,na.rm = TRUE))
-  dat2$TairMu <- TairMu + (0-min(na.omit(TairMu))) ##Done to make sure all temperatures are >= 0 
-  print(length(na.omit(dat2$TairMu)))
-  print(length((dat2$TairMu)))
-  baseTempOrig <- baseTemp
-  baseTemp <- baseTemp + (0-min(na.omit(TairMu)))
+  dat2$TairMu <- TairMu ##Done to make sure all temperatures are >= 0 
+
   print("basetemp:")
   print(baseTemp)
   dat2$TairPrec<- TairPrec
+  print(length(dat2$dates))
+  print(length(dat2$TairMu))
+  print(length(na.omit(dat2$TairMu)))
   
   ICsdat <- dat2[as.numeric(format(dat2$dates,"%j"))%in% seq(203,212),]
   dat2 <- dat2[as.numeric(format(dat2$dates,"%j"))%in% seq(213,365),]
