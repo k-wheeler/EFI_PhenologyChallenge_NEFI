@@ -11,7 +11,7 @@ baseTemp <- 20
 nchain=5
 
 siteData <- siteData[seq(13,20),] #Thinned for NEON sites
-i=2
+i=1
 #for(i in 1:nrow(siteData)){
   
   siteName <- as.character(siteData[i,1])
@@ -52,10 +52,8 @@ i=2
   phenoData <- phenoData[phenoData$date<endDate,]
   p.old <- phenoData$gcc_90
   time.old <-  as.Date(phenoData$date)
-  #print("passed time.old")
   
   days <- seq(as.Date(startDate),(as.Date(endDate)),"day")
-  #print("past days")
   p <- rep(NA,length(days))
   
   for(i in 1:length(p.old)){
@@ -66,23 +64,14 @@ i=2
   years <- lubridate::year(days)
   
   dat2 <- data.frame(dates=days,years=years,months=months,p=p)
-  datTairEns <- load_ERA5_Tair_New(ERA5dataFolder=ERA5dataFolder,endDate=endDate)
-  #print(head(datTairEns))
+  datTairEns <- load_ERA5_Tair_New(ERA5dataFolder=ERA5dataFolder,endDate=endDate,stacked=FALSE)
   print("Finished loading ERA5")
   TairMu <- apply(X=datTairEns,MARGIN=2,FUN=mean,na.rm=TRUE)
-  #print("Tairmu:")
-  #print(TairMu)
-  #print(range(TairMu,na.rm = TRUE))
+
   TairPrec <- 1/apply(X=datTairEns,MARGIN=2,FUN=var,na.rm=TRUE)
-  #print(min(TairMu,na.rm = TRUE))
   dat2$TairMu <- TairMu ##Done to make sure all temperatures are >= 0 
 
-  print("basetemp:")
-  print(baseTemp)
   dat2$TairPrec<- TairPrec
-  print(length(dat2$dates))
-  print(length(dat2$TairMu))
-  print(length(na.omit(dat2$TairMu)))
   
   ICsdat <- dat2[as.numeric(format(dat2$dates,"%j"))%in% seq(203,212),]
   dat2 <- dat2[as.numeric(format(dat2$dates,"%j"))%in% seq(213,365),]
@@ -108,20 +97,14 @@ i=2
     ICs <- cbind(ICs,ICsdat[lubridate::year(as.Date(ICsdat$dates))==i,]$p)
     days2 <- cbind(days2,as.Date(subDat$dates))
     finalYrs <- c(finalYrs,i)
-    print(length(subDat$p))
-    print(length(na.omit(subDat$TairMu)))
     TairMu <- cbind(TairMu,subDat$TairMu)
     TairPrec <- cbind(TairPrec,subDat$TairPrec)
     sofs <- c(sofs,(fittedDat[valNum,'FallStartDay']-212))
   }
   
   dataFinal <- list(p=p,years=finalYrs,sofMean=mean(sofs))
-  print("length(p)")
-  print(length(p))
   dataFinal$n <- nrowNum
   dataFinal$N <- ncol(dataFinal$p)
-  print(dataFinal$n)
-  print(dataFinal$N)
   dataFinal$CDDtrigger.lower <- 0
   dataFinal$CDDtrigger.upper <- 500
   dataFinal$s1.PC <- 1.56#1262.626 ## Very roughly based off of what I think are reasonable and uninformed priors
@@ -141,9 +124,6 @@ i=2
   dataFinal$x1.a <- x1a
   dataFinal$x1.b <- x1b
   
-  print(length(na.omit(TairMu)))
-  print(length((TairMu)))
-  print(length(na.omit(TairPrec)))
   dataFinal$TairMu <- TairMu
   dataFinal$TairPrec <- TairPrec
   dataFinal$baseTemp <- baseTemp
@@ -237,6 +217,5 @@ i=2
   out.burn2$predict <- window(out.burn$predict,thin=thinAmount)
   out.burn <- out.burn2
   save(out.burn,file = outputFileName)
-  
-}
+#}
 
