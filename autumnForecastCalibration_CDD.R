@@ -11,8 +11,8 @@ baseTemp <- 20
 nchain=5
 
 siteData <- siteData[seq(13,20),] #Thinned for NEON sites
-
-for(i in 1:nrow(siteData)){
+i=2
+#for(i in 1:nrow(siteData)){
   
   siteName <- as.character(siteData[i,1])
   print(siteName)
