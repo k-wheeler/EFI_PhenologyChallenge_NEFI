@@ -100,7 +100,7 @@ for(i in 1:nrow(siteData)){
   sofs <- numeric()
   
   for(i in (lubridate::year(as.Date(dat2$dates[1]))):lubridate::year(as.Date(dat2$dates[length(dat2$dates)]))){##I know this includes the forecasted stuff, but it shouldn't really matter because of the JAGS model setup
-    #print(i)
+    print(i)
     subDat <- dat2[lubridate::year(as.Date(dat2$dates))==i,]
     valNum <- valNum + 1
     newCol <- subDat$p
@@ -108,6 +108,8 @@ for(i in 1:nrow(siteData)){
     ICs <- cbind(ICs,ICsdat[lubridate::year(as.Date(ICsdat$dates))==i,]$p)
     days2 <- cbind(days2,as.Date(subDat$dates))
     finalYrs <- c(finalYrs,i)
+    print(length(subDat$p))
+    print(length(na.omit(subDat$TairMu)))
     TairMu <- cbind(TairMu,subDat$TairMu)
     TairPrec <- cbind(TairPrec,subDat$TairPrec)
     sofs <- c(sofs,(fittedDat[valNum,'FallStartDay']-212))
