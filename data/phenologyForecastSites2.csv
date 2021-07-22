@@ -1,0 +1,21 @@
+siteName,Lat,Long,URL,PFT,TZ,startDate,URL2,URL3,metStation,elev
+harvard,42.5378,-72.1715,http://phenocam.sr.unh.edu/data/archive/harvard/ROI/harvard_DB_0001_1day.csv,DB,5,2009-01-01,,,USC00190190,340
+hubbardbrooksfws,43.9269,-71.7407,https://phenocam.sr.unh.edu/data/archive/hubbardbrooksfws/ROI/hubbardbrooksfws_DB_2000_1day.csv,DB,5,2014-01-01,https://phenocam.sr.unh.edu/data/archive/hubbardbrooksfws/ROI/hubbardbrooksfws_DB_3000_1day.csv,,USC00278961,650
+coweeta,35.05959,-83.42798,http://phenocam.sr.unh.edu/data/archive/coweeta/ROI/coweeta_DB_1000_1day.csv,DB,5,2012-01-01,http://phenocam.sr.unh.edu/data/archive/coweeta/ROI/coweeta_DB_2000_1day.csv,,USC00388887,230
+bartlettir,44.0646,-71.2881,http://phenocam.sr.unh.edu/data/archive/bartlettir/ROI/bartlettir_DB_1000_1day.csv,DB,5,2009-01-01,http://phenocam.sr.unh.edu/data/archive/bartlettir/ROI/bartlettir_DB_2000_1day.csv,,USC00274734,268
+missouriozarks,38.7441,-92.2,https://phenocam.sr.unh.edu/data/archive/missouriozarks/ROI/missouriozarks_DB_1000_1day.csv,DB,6,2013-01-01,,,USC00231801,219
+willowcreek,45.805986,-90.0791,https://phenocam.sr.unh.edu/data/archive/willowcreek/ROI/willowcreek_DB_1000_1day.csv,DB,6,2013-01-01,,,USC00475516,521
+bullshoals,36.5628,-93.0666,https://phenocam.sr.unh.edu/data/archive/bullshoals/ROI/bullshoals_DB_1000_1day.csv,DB,6,2014-01-01,,,USC00236460,260
+shiningrock,35.390159,-82.774967,https://phenocam.sr.unh.edu/data/archive/shiningrock/ROI/shiningrock_DB_3000_1day.csv,DB,5,2010-01-01,,,USR0000TCHE,1500
+caryinstitute,41.7839,-73.7341,https://phenocam.sr.unh.edu/data/archive/caryinstitute/ROI/caryinstitute_DB_1000_1day.csv,DB,5,2009-01-01,,,USW00014757,127
+russellsage,32.457,-91.9743,https://phenocam.sr.unh.edu/data/archive/russellsage/ROI/russellsage_DB_1000_1day.csv,DB,6,2014-01-01,,,,20
+shenandoah,38.6167,-78.3500,https://phenocam.sr.unh.edu/data/archive/shenandoah/ROI/shenandoah_DB_1000_1day.csv,DB,5,2010-01-01,,,,1037
+sweetbriar,37.5734,-79.0848,https://phenocam.sr.unh.edu/data/archive/shenandoah/ROI/shenandoah_DB_1000_1day.csv,DB,5,2015-01-01,,,,242
+NEON.D01.HARV.DP1.00033,42.5369,-72.1727,https://phenocam.sr.unh.edu/data/archive/NEON.D01.HARV.DP1.00033/ROI/NEON.D01.HARV.DP1.00033_DB_1000_1day.csv,DB,5,2017-01-01,,,,359
+NEON.D01.BART.DP1.00033,44.0639, -71.2874,https://phenocam.sr.unh.edu/data/archive/NEON.D01.BART.DP1.00033/ROI/NEON.D01.BART.DP1.00033_DB_1000_1day.csv,DB,5,2017-01-01,,,,285
+NEON.D02.SCBI.DP1.00033,38.8929,-78.1395,https://phenocam.sr.unh.edu/data/archive/NEON.D02.SCBI.DP1.00033/ROI/NEON.D02.SCBI.DP1.00033_DB_1000_1day.csv,DB,5,2017-01-01,,,,364
+NEON.D05.STEI.DP1.00033,45.5089,-89.5864,https://phenocam.sr.unh.edu/data/archive/NEON.D05.STEI.DP1.00033/ROI/NEON.D05.STEI.DP1.00033_DB_1000_1day.csv,DB,6,2018-01-01,,,,476
+NEON.D06.UKFS.DP1.00033,39.0404,-95.1922,https://phenocam.sr.unh.edu/data/archive/NEON.D06.UKFS.DP1.00033/ROI/NEON.D06.UKFS.DP1.00033_DB_1000_1day.csv,DB,6,2019-01-01,,,,330
+NEON.D07.GRSM.DP1.00033,35.6890,-83.5020,https://phenocam.sr.unh.edu/data/archive/NEON.D07.GRSM.DP1.00033/ROI/NEON.D07.GRSM.DP1.00033_DB_1000_1day.csv,DB,5,2018-01-01,,,,589
+NEON.D08.DELA.DP1.00033,32.5417,-87.8039,https://phenocam.sr.unh.edu/data/archive/NEON.D08.DELA.DP1.00033/ROI/NEON.D08.DELA.DP1.00033_DB_1000_1day.csv,DB,6,2017-01-01,,,,36
+NEON.D11.CLBJ.DP1.00033,33.4012,-97.5700,https://phenocam.sr.unh.edu/data/archive/NEON.D11.CLBJ.DP1.00033/ROI/NEON.D11.CLBJ.DP1.00033_DB_2000_1day.csv,DB,6,2018-01-01,,,,279
