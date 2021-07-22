@@ -112,6 +112,8 @@ for(i in 1:nrow(siteData)){
   }
   
   dataFinal <- list(p=p,years=finalYrs,sofMean=mean(sofs))
+  print("length(p)")
+  print(length(p))
   dataFinal$n <- nrowNum
   dataFinal$N <- ncol(dataFinal$p)
   dataFinal$CDDtrigger.lower <- 0
@@ -133,6 +135,8 @@ for(i in 1:nrow(siteData)){
   dataFinal$x1.a <- x1a
   dataFinal$x1.b <- x1b
   
+  print(length(na.omit(TairMu)))
+  print(length(na.omit(TairPrec)))
   dataFinal$TairMu <- TairMu
   dataFinal$TairPrec <- TairPrec
   dataFinal$baseTemp <- baseTemp
@@ -156,8 +160,6 @@ for(i in 1:nrow(siteData)){
   for(yr in 1:dataFinal$N){
     CDD <- 0
     for(i in 1:sofs[yr]){
-      print(dim(dataFinal$baseTemp))
-      print(dataFinal$baseTemp)
       if(dataFinal$TairMu[i,yr]<dataFinal$baseTemp){
         CDD <- CDD + (dataFinal$baseTemp - dataFinal$TairMu[i,yr])
       }
