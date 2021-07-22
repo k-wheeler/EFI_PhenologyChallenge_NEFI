@@ -67,6 +67,7 @@ for(i in 1:nrow(siteData)){
   
   dat2 <- data.frame(dates=days,years=years,months=months,p=p)
   datTairEns <- load_ERA5_Tair_New(ERA5dataFolder=ERA5dataFolder,endDate=endDate)
+  print(head(datTairEns))
   print("Finished loading ERA5")
   TairMu <- apply(X=datTairEns,MARGIN=2,FUN=mean)
   TairPrec <- 1/apply(X=datTairEns,MARGIN=2,FUN=var)
