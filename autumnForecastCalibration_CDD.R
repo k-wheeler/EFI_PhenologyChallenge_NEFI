@@ -93,7 +93,7 @@ for(i in 1:nrow(siteData)){
     valNum <- valNum + 1
     newCol <- subDat$p
     p <- cbind(p,newCol)
-    ICs <- cbind(ICs,scales::ICsdat[lubridate::year(as.Date(ICsdat$dates))==i,]$p)
+    ICs <- cbind(ICs,ICsdat[lubridate::year(as.Date(ICsdat$dates))==i,]$p)
     days2 <- cbind(days2,as.Date(subDat$dates))
     finalYrs <- c(finalYrs,i)
     TairMu <- cbind(TairMu,subDat$TairMu)
