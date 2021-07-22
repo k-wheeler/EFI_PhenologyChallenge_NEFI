@@ -69,9 +69,9 @@ for(i in 1:nrow(siteData)){
   datTairEns <- load_ERA5_Tair_New(ERA5dataFolder=ERA5dataFolder,endDate=endDate)
   #print(head(datTairEns))
   print("Finished loading ERA5")
-  TairMu <- apply(X=datTairEns,MARGIN=2,FUN=mean)
-  TairPrec <- 1/apply(X=datTairEns,MARGIN=2,FUN=var)
-  print(min(TairMu))
+  TairMu <- apply(X=datTairEns,MARGIN=2,FUN=mean,na.rm=TRUE)
+  TairPrec <- 1/apply(X=datTairEns,MARGIN=2,FUN=var,na.rm=TRUE)
+  print(min(TairMu,na.rm = TRUE))
   dat2$TairMu <- TairMu + (0-min(TairMu)) ##Done to make sure all temperatures are >= 0 
   baseTempOrig <- baseTemp
   baseTemp <- baseTemp + (0-min(TairMu)) 
