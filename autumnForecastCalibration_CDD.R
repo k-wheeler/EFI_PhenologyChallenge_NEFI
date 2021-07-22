@@ -116,6 +116,8 @@ for(i in 1:nrow(siteData)){
   print(length(p))
   dataFinal$n <- nrowNum
   dataFinal$N <- ncol(dataFinal$p)
+  print(dataFinal$n)
+  print(dataFInal$N)
   dataFinal$CDDtrigger.lower <- 0
   dataFinal$CDDtrigger.upper <- 500
   dataFinal$s1.PC <- 1.56#1262.626 ## Very roughly based off of what I think are reasonable and uninformed priors
