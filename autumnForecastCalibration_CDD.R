@@ -176,8 +176,8 @@ for(i in 1:nrow(siteData)){
   #### Process Model
   for(yr in 1:(N)){
   for(i in 2:n){
-  #Tair[i,yr] ~ dnorm(TairMu[i,yr],TairPrec[i,yr])
-  CDDs[i,yr] <- ifelse(TairMu[i,yr]<baseTemp,CDDs[(i-1),yr]+baseTemp - TairMu[i,yr],CDDs[(i-1),yr])
+  Tair[i,yr] ~ dnorm(TairMu[i,yr],TairPrec[i,yr])
+  CDDs[i,yr] <- ifelse(TairMu[i,yr]<baseTemp,CDDs[(i-1),yr]+baseTemp - Tair[i,yr],CDDs[(i-1),yr])
   xmu[i,yr] <- x[(i-1),yr] + ifelse(CDDs[i,yr]>CDDtrigger,(b0 + (b1 * x[(i-1),yr]) + (b2 * x[(i-1),yr] ** 2)),a)
   x[i,yr] ~ dnorm(xmu[i,yr],p.proc) T(0,0.999)
   }
