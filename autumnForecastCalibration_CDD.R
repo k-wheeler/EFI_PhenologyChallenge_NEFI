@@ -74,6 +74,7 @@ for(i in 1:nrow(siteData)){
   dat2$TairMu <- TairMu + (0-min(TairMu)) ##Done to make sure all temperatures are >= 0 
   baseTempOrig <- baseTemp
   baseTemp <- baseTemp + (0-min(TairMu)) 
+  print(baseTemp)
   dat2$TairPrec<- TairPrec
   
   ICsdat <- dat2[as.numeric(format(dat2$dates,"%j"))%in% seq(203,212),]
