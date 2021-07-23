@@ -33,9 +33,9 @@ p[i,yr] ~ dnorm(x[i,yr],p.PC)
 for(yr in 1:(N)){
 for(i in 2:n){
 Tair[i,yr] ~ dnorm(TairMu[i,yr],TairPrec[i,yr])
-CDDs[i,yr] <- ifelse(TairMu[i,yr]<baseTemp,CDDs[(i-1),yr]+baseTemp - Tair[i,yr],CDDs[(i-1),yr])
-xmu[i,yr] <- x[(i-1),yr] + ifelse(CDDs[i,yr]>CDDtrigger,(b0 + (b1 * x[(i-1),yr]) + (b2 * x[(i-1),yr] ** 2)),a)
-x[i,yr] ~ dnorm(xmu[i,yr],p.proc) T(0,0.999)
+CDDs[i,yr] <- ifelse(Tair[i,yr]<baseTemp,CDDs[(i-1),yr]+baseTemp - Tair[i,yr],CDDs[(i-1),yr])
+xmu[i,yr] <- max(min(x[(i-1),yr] + ifelse(CDDs[i,yr]>CDDtrigger,(b0 + (b1 * x[(i-1),yr]) + (b2 * x[(i-1),yr] ** 2)),a),x[1,yr]),0)
+x[i,yr] ~ dnorm(xmu[i,yr],p.proc) # T(0,0.999)
 }
 }
 
@@ -174,11 +174,11 @@ foreach(i=1:nrow(siteData)) %dopar% {
   inits <- list()
   
   dataFinal$b0_lower <- -1
-  dataFinal$b0_upper <- 1
-  dataFinal$b1_lower <- -1
+  dataFinal$b0_upper <- 0
+  dataFinal$b1_lower <- 0
   dataFinal$b1_upper <- 1
   dataFinal$b2_lower <- -1
-  dataFinal$b2_upper <- 1
+  dataFinal$b2_upper <- 0
   dataFinal$a_upper <- 0
   dataFinal$a_lower <- -0.01
   dataFinal$CDDtrigger.lower <- 0
@@ -206,6 +206,7 @@ foreach(i=1:nrow(siteData)) %dopar% {
                        b1=rnorm(1,0.6,0.08),
                        b2=rnorm(1,-0.5,0.1))
   }
+  print(paste(siteName,inits))
   
   save(dataFinal,file=paste(siteName,"_EFIChallengeCalibration_dataFinal.RData",sep=""))
   
