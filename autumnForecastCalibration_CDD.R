@@ -186,37 +186,49 @@ foreach(i=1:nrow(siteData)) %dopar% {
   transitionCDD <- numeric()
   agings <- numeric()
   ##Determine Inits:
+  preFit <- paste("partial_",siteName,"_EFI_ForecastChallenge_calibration_varBurn.RData",sep="")
+  load(preFit)
+  out.mat <- as.matrix(partialOutput$params)
   
-  for(yr in 1:dataFinal$N){
-    CDD <- 0
-    for(i in 1:sofs[yr]){
-      if(dataFinal$TairMu[i,yr]<dataFinal$baseTemp){
-        CDD <- CDD + (dataFinal$baseTemp - dataFinal$TairMu[i,yr])
-      }
-    }
-    transitionCDD <- c(transitionCDD,CDD)
-    agings <- c(agings,
-                as.numeric(lm(dataFinal$p[,yr]~seq(1,length(dataFinal$p[,yr])))$coefficients[2]))
-  }
-  
+  # for(yr in 1:dataFinal$N){
+  #   CDD <- 0
+  #   for(i in 1:sofs[yr]){
+  #     if(dataFinal$TairMu[i,yr]<dataFinal$baseTemp){
+  #       CDD <- CDD + (dataFinal$baseTemp - dataFinal$TairMu[i,yr])
+  #     }
+  #   }
+  #   transitionCDD <- c(transitionCDD,CDD)
+  #   agings <- c(agings,
+  #               as.numeric(lm(dataFinal$p[,yr]~seq(1,length(dataFinal$p[,yr])))$coefficients[2]))
+  # }
+  # 
+  # for(i in 1:nchain){
+  #   inits[[i]] <- list(CDDtrigger = rnorm(1,mean(transitionCDD),10),
+  #                      a=rnorm(1,mean(agings),0.0005),
+  #                      b0=rnorm(1,-0.25,0.05),
+  #                      b1=rnorm(1,0.6,0.08),
+  #                      b2=rnorm(1,-0.5,0.1))
+  # }
   for(i in 1:nchain){
-    inits[[i]] <- list(CDDtrigger = rnorm(1,mean(transitionCDD),10),
-                       a=rnorm(1,mean(agings),0.0005),
-                       b0=rnorm(1,-0.25,0.05),
-                       b1=rnorm(1,0.6,0.08),
-                       b2=rnorm(1,-0.5,0.1))
+    inits[[i]] <- list(CDDtrigger = rnorm(1,mean(out.mat$CDDtrigger),sd(out.mat$CDDtrigger)),
+                       a=rnorm(1,mean(out.mat$a),sd(out.mat$a)),
+                       b0=rnorm(1,mean(out.mat$b0),sd(out.mat$b0)),
+                       b1=rnorm(1,mean(out.mat$b1),sd(out.mat$b1)),
+                       b2=rnorm(1,mean(out.mat$b2),sd(out.mat$b2)))
   }
+  
   print(paste(siteName,inits))
   
   save(dataFinal,file=paste(siteName,"_EFIChallengeCalibration_dataFinal.RData",sep=""))
   
   j.model   <- jags.model(file = textConnection(generalModel),
                           data = dataFinal,
+                          inits = inits,
                           n.chains = nchain,
-                          n.adapt = 1500)
+                          n.adapt = 2500)
   
   out.burn <- runForecastIter(j.model=j.model,variableNames=variableNames,
-                              baseNum = 15000,iterSize = 5000,effSize = 5000,partialFile = paste("partial_",outputFileName,sep=""))
+                              baseNum = 15000,iterSize = 5000,effSize = 5000,partialFile = paste("partial2_",outputFileName,sep=""))
   ##Thin the data:
   out.mat <- as.matrix(out.burn$params)
   thinAmount <- round(nrow(out.mat)/5000,digits=0)
