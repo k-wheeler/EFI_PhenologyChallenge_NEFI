@@ -55,6 +55,7 @@ downloadERA5Temp <- function(end_date,siteName,lat,long){
 library(doParallel)
 
 n.cores <- 8
+registerDoParallel(cores=n.cores)
 
 siteData <- read.csv("data/phenologyForecastSites2.csv",header=TRUE)
 siteData <- siteData[seq(13,20),]
