@@ -13,7 +13,7 @@ library("reticulate")
 #'
 #' @examples
 downloadERA5Temp <- function(end_date,siteName,lat,long){
-  start_date <- as.Date("2021-07-01") ##
+  start_date <- as.Date("2021-07-01") ##Change Later
   
   setwd("/projectnb/dietzelab/kiwheel/ERA5")
   outfolder <- paste("Data/",siteName,sep="")
@@ -55,7 +55,7 @@ library(doParallel)
 
 n.cores <- 8
 registerDoParallel(cores=n.cores)
-
+setwd('/projectnb/dietzelab/kiwheel/EFI_PhenologyChallenge_NEFI/')
 siteData <- read.csv("data/phenologyForecastSites2.csv",header=TRUE)
 siteData <- siteData[seq(13,20),]
 forecastStartDate <- Sys.Date()
