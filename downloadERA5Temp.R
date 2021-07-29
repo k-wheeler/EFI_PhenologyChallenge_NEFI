@@ -65,8 +65,9 @@ forecastStartDate <- Sys.Date()
 foreach(s=1:nrow(siteData)) %dopar% {
   ##Load Calibration Data: 
   siteName <- as.character(siteData$siteName[s])
-  lat <- as.numeric(siteData[i,2])
-  long <- as.numeric(siteData[i,3])
+  print(siteName)
+  lat <- as.numeric(siteData[s,2])
+  long <- as.numeric(siteData[s,3])
   
   downloadERA5Temp(end_date=forecastStartDate,siteName=siteName,lat=lat,long=long)
 
