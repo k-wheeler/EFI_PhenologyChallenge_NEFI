@@ -62,7 +62,7 @@ siteData <- siteData[seq(13,20),]
 forecastStartDate <- Sys.Date()
 
 #for(s in 1:nrow(siteData)){
-foreach(i=1:nrow(siteData)) %dopar% {
+foreach(s=1:nrow(siteData)) %dopar% {
   ##Load Calibration Data: 
   siteName <- as.character(siteData$siteName[s])
   lat <- as.numeric(siteData[i,2])
