@@ -14,7 +14,7 @@
 #'
 #' @examples
 GEFS_Data <- function(dte,siteID){
-  source_url('https://github.com/eco4cast/neon4cast/blob/main/R/noaa.R?raw=TRUE')
+  #source_url('https://github.com/eco4cast/neon4cast/blob/main/R/noaa.R?raw=TRUE')
   time_interval <- "1hr"
   cycle <- "00"
   download_noaa(siteID=siteID,interval=time_interval,date=dte,cycle=cycle,dir='data')
