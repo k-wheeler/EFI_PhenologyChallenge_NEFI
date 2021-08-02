@@ -6,10 +6,10 @@ library(doParallel)
 #library(devtools)
 
 setwd('/projectnb/dietzelab/kiwheel/EFI_PhenologyChallenge_NEFI')
-source('compileCovariates.R')
-source('GEFS_Data.R')
-source('downloadERA5Temp.R')
-source('saveForecastsEFIStandard.R')
+#source('compileCovariates.R')
+#source('GEFS_Data.R')
+#source('downloadERA5Temp.R')
+#source('saveForecastsEFIStandard.R')
 
 n.cores <- 8
 
