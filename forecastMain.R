@@ -84,7 +84,7 @@ for(s in 1:nrow(siteData)){
   URLs <- URL
   
   phenoData <- matrix(nrow=0,ncol=32)
-  print(URLs[1])
+  print(paste("URLs:",URLs))
   for(u in 1:length(URLs)){
     phenoDataSub <- download.phenocam(URLs[u])
     phenoData <- rbind(phenoData,phenoDataSub)
