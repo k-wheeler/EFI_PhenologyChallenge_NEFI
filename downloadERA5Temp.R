@@ -29,26 +29,27 @@ downloadERA5Temp <- function(end_date,siteName,lat,long){
   )
   var <- variables[["api_name"]][[1]]
   area <- rep(round(c(lat, long) * 4) / 4, 2)
-  
-  do_next <- tryCatch({
-    cclient$retrieve(
-      "reanalysis-era5-single-levels",
-      list(
-        variable = var,
-        product_type = 'ensemble_members',
-        date = paste(start_date, end_date, sep = "/"),
-        time = "00/to/23/by/1",
-        area = area,
-        grid = c(0.25, 0.25),
-        format = "netcdf"
-      ),
-      fname
-    )
-    FALSE
-  }, error = function(e) {
-    print("Failed to download variable Mean")
-    TRUE
-  })
+  if(!file.exists(fname)){
+    do_next <- tryCatch({
+      cclient$retrieve(
+        "reanalysis-era5-single-levels",
+        list(
+          variable = var,
+          product_type = 'ensemble_members',
+          date = paste(start_date, end_date, sep = "/"),
+          time = "00/to/23/by/1",
+          area = area,
+          grid = c(0.25, 0.25),
+          format = "netcdf"
+        ),
+        fname
+      )
+      FALSE
+    }, error = function(e) {
+      print("Failed to download variable Mean")
+      TRUE
+    })
+  }
 }
 
 library(doParallel)
