@@ -3,7 +3,7 @@ library(PhenologyBayesModeling)
 library(rjags)
 library(runjags)
 library(doParallel)
-library(devtools)
+#library(devtools)
 
 setwd('/projectnb/dietzelab/kiwheel/EFI_PhenologyChallenge_NEFI')
 source('compileCovariates.R')
