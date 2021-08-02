@@ -11,7 +11,7 @@
 #'
 #' @examples
 compileCovariates <- function(forecastStartDate,siteID){
-  dates <- seq(as.Date("2021-08-01"),forecastStartDate,"day")
+  dates <- seq(as.Date("2021-01-01"),forecastStartDate,"day")
   
   datTairEns <- load_ERA5_Tair_New(ERA5dataFolder=ERA5dataFolder,endDate=forecastStartDate,stacked=FALSE)
   TairMu <- colMeans(datTairEns)
@@ -21,19 +21,18 @@ compileCovariates <- function(forecastStartDate,siteID){
   
   ##GEFS for gap filling
   for(d in (length(TairMu)+1):length(dates)){
-    for(d in (24+1):length(dates)){
-      dte <- dates[d]
-      input <- GEFS_Data(dte=dte,siteID=siteID)
-      TairMu <- c(TairMu,colMeans(input,na.rm = TRUE)[1])
-      TairPrec <- c(TairPrec,1/(apply(X=input,FUN=sd,MARGIN = 2,na.rm=TRUE)**2)[1])
-    }
-    
-    ##GEFS forecast 
-    input <- GEFS_Data(dte=forecastStartDate,siteID=siteID)
-    TairMu <- c(TairMu,colMeans(input,na.rm = TRUE))
-    TairPrec <- c(TairPrec,1/(apply(X=input,FUN=sd,MARGIN = 2,na.rm=TRUE)**2))
-    
-    output <- list(TairMu=TairMu,TairPrec=TairPrec)
+    #for(d in (24+1):length(dates)){ ##Need to change 
+    dte <- dates[d]
+    input <- GEFS_Data(dte=dte,siteID=siteID)
+    TairMu <- c(TairMu,colMeans(input,na.rm = TRUE)[1])
+    TairPrec <- c(TairPrec,1/(apply(X=input,FUN=sd,MARGIN = 2,na.rm=TRUE)**2)[1])
   }
+  
+  ##GEFS forecast 
+  input <- GEFS_Data(dte=forecastStartDate,siteID=siteID)
+  TairMu <- c(TairMu,colMeans(input,na.rm = TRUE))
+  TairPrec <- c(TairPrec,1/(apply(X=input,FUN=sd,MARGIN = 2,na.rm=TRUE)**2))
+  
+  output <- list(TairMu=TairMu,TairPrec=TairPrec)
 }
 

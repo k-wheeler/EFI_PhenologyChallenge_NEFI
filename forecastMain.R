@@ -4,6 +4,7 @@ library(rjags)
 library(runjags)
 library(doParallel)
 
+setwd('/projectnb/dietzelab/kiwheel/EFI_PhenologyChallenge_NEFI')
 source('compileCovariates.R')
 source('GEFS_Data.R')
 source('downloadERA5Temp.R')
@@ -19,7 +20,7 @@ n.cores <- 8
 siteData <- read.csv("data/phenologyForecastSites2.csv",header=TRUE)
 
 siteData <- siteData[seq(13,20),]
-forecastStartDate <- as.Date("2021-08-01")#Sys.Date()
+forecastStartDate <- Sys.Date()
 startDate <- as.Date("2021-01-01")
 
 baseTemp <- 20
@@ -62,7 +63,7 @@ for(s in 1:nrow(siteData)){
   ##Load Calibration Data: 
   siteName <- as.character(siteData$siteName[s])
   
-  calFileName <- paste(siteName,"_EFI_ForecastChallenge_calibration_varBurn.RData",sep="")
+  calFileName <- paste("partial2_",siteName,"_EFI_ForecastChallenge_calibration_varBurn.RData",sep="")
   outputFileName <- paste(siteName,"_",forecastStartDate,"_EFI_ForecastChallenge_varBurn.RData",sep="")
   ERA5dataFolder <- paste("/projectnb/dietzelab/kiwheel/ERA5/Data/",siteName,"/",sep="")
   
@@ -159,12 +160,12 @@ for(s in 1:nrow(siteData)){
                           data = dataFinal,
                           inits = inits,
                           n.chains = nchain,
-                          n.adapt = 2000)
+                          n.adapt = 1000)
   
   out.burn <- runForecastIter(j.model=j.model,variableNames=variableNames,
-                              baseNum = 15000,iterSize = 5000,effSize = 5000,partialFile = paste("partial_",outputFileName,sep=""))
+                              baseNum = 10000,iterSize = 2000,effSize = 1000,partialFile = paste("partial_",outputFileName,sep=""))
   out.mat <- as.matrix(out.burn$params)
-  thinAmount <- round(nrow(out.mat)/5000,digits=0)
+  thinAmount <- round(nrow(out.mat)/1000,digits=0)
   out.burn2 <- list()
   out.burn2$params <- window(out.burn$params,thin=thinAmount)
   out.burn2$predict <- window(out.burn$predict,thin=thinAmount)
