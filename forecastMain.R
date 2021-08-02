@@ -4,7 +4,8 @@ library(rjags)
 library(runjags)
 library(doParallel)
 library(ncdf4)
-library(devtools)
+remove.packages('usethis')
+library(devtools, lib.loc = "/share/pkg.7/r/3.5.1/install/lib64/R/library")
 
 ##' Calculates cummulative Tair (within one year for one ensemble)
 ##'
