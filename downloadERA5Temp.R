@@ -13,7 +13,7 @@ library("reticulate")
 #'
 #' @examples
 downloadERA5Temp <- function(end_date,siteName,lat,long){
-  start_date <- as.Date("2021-07-01") ##Change Later
+  start_date <- as.Date("2021-01-01") ##Change Later
   
   setwd("/projectnb/dietzelab/kiwheel/ERA5")
   outfolder <- paste("Data/",siteName,sep="")
