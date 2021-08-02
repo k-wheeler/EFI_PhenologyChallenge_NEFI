@@ -1,6 +1,6 @@
 ###GEFS Download
-library('devtools')
-library(ncdf4)
+# library('devtools')
+# library(ncdf4)
 
 #' GEFS Data
 #'
