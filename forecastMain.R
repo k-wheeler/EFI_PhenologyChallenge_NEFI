@@ -3,6 +3,7 @@ library(PhenologyBayesModeling)
 library(rjags)
 library(runjags)
 library(doParallel)
+library(ncdf4)
 #library(devtools)
 
 ##' Calculates cummulative Tair (within one year for one ensemble)
