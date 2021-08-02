@@ -95,11 +95,11 @@ for(s in 1:nrow(siteData)){
   phenoData3 <- phenoData2[!duplicated(phenoData2$date),]
   phenoData <- phenoData3
   
-  phenoData <- phenoData[phenoData$date<endDate,]
+  phenoData <- phenoData[phenoData$date<forecastStartDate,]
   p.old <- phenoData$gcc_90
   time.old <-  as.Date(phenoData$date)
   
-  days <- seq(as.Date(startDate),(as.Date(endDate)),"day")
+  days <- seq(as.Date(startDate),(as.Date(forecastStartDate)),"day")
   p <- rep(NA,length(days))
   
   for(i in 1:length(p.old)){
