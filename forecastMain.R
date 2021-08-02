@@ -32,7 +32,7 @@ load_ERA5_Tair_New2 <- function(lat="",long="",endDate="",calDatesT=TRUE,ERA5dat
     
     Tairs <- ncvar_get(ensembleFile)-273 #Convert from Kelvin to C
     
-    if(endDate==as.Date("2020-12-31") && stacked){
+    if(stacked){
       Tairs <- Tairs[,1,]
     }
     
