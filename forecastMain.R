@@ -6,8 +6,8 @@ library(doParallel)
 #library(devtools)
 
 setwd('/projectnb/dietzelab/kiwheel/EFI_PhenologyChallenge_NEFI')
-#source('compileCovariates.R')
-#source('GEFS_Data.R')
+source('compileCovariates.R')
+source('GEFS_Data.R')
 #source('downloadERA5Temp.R')
 #source('saveForecastsEFIStandard.R')
 
@@ -68,19 +68,19 @@ for(s in 1:nrow(siteData)){
   outputFileName <- paste(siteName,"_",forecastStartDate,"_EFI_ForecastChallenge_varBurn.RData",sep="")
   ERA5dataFolder <- paste("/projectnb/dietzelab/kiwheel/ERA5/Data/",siteName,"/",sep="")
   
-  lat <- as.numeric(siteData[i,2])
-  long <- as.numeric(siteData[i,3])
-  startDate <- (as.Date(siteData[i,7]))
-  URL <- as.character(siteData$URL[i])
-  URL2 <- as.character(siteData$URL2[i])
-  URL3 <- as.character(siteData$URL3[i])
+  lat <- as.numeric(siteData[s,2])
+  long <- as.numeric(siteData[s,3])
+  startDate <- (as.Date(siteData[s,7]))
+  URL <- as.character(siteData$URL[s])
+  URL2 <- as.character(siteData$URL2[s])
+  URL3 <- as.character(siteData$URL3[s])
   if(nchar(URL2)>0){
     URL <- c(URL,URL2)
     if(nchar(URL3)>0){
       URL <- c(URL,URL3)
     }
   }
-  TZ <- as.numeric(siteData[i,6])
+  TZ <- as.numeric(siteData[s,6])
   URLs <- URL
   
   phenoData <- matrix(nrow=0,ncol=32)
@@ -121,8 +121,8 @@ for(s in 1:nrow(siteData)){
   
   dataFinal <- list(p=dat2$p,TairMu=datTairs$TairMu,TairPrec=datTairs$TairPrec,baseTemp=baseTemp)
   dataFinal$n <- nrowNum
-  mu <- mean(ICs[],na.rm=TRUE)
-  vr <- var(ICs[],na.rm = TRUE)
+  mu <- mean(ICs,na.rm=TRUE)
+  vr <- var(ICs,na.rm = TRUE)
   x1a <- (mu**2-mu**3-mu*vr)/(vr)
   x1b <- (mu-2*mu**2+mu**3-vr+mu*vr)/(vr)
   dataFinal$x1.a <- x1a
