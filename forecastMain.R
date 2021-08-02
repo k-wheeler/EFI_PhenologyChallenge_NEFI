@@ -5,6 +5,58 @@ library(runjags)
 library(doParallel)
 #library(devtools)
 
+##' Calculates cummulative Tair (within one year for one ensemble)
+##'
+##' @param lat The site latitude
+##' @param long The site longitude
+##' @param endDate
+##' @param calDatesT
+##' @param ERA5dataFolder
+##' @param TZ_name
+##' @param stacked
+##' @import xts
+##' @import ncdf4
+##' @export
+load_ERA5_Tair_New2 <- function(lat="",long="",endDate="",calDatesT=TRUE,ERA5dataFolder,TZ_name="America/New_York",stacked=TRUE) {
+  if(calDatesT){ #Need to include calibration data
+    calFileName <- dir(path=ERA5dataFolder,pattern=paste(endDate,"_era5AirTemperatureMembers",sep=""))
+    
+    if(length(calFileName)==0){
+      downloadERA5Calibration(var="ensemble_members") ##***Need to add this function***
+      calFileName <- dir(path=ERA5dataFolder,pattern=paste(endDate,"_era5AirTemperatureMembers",sep=""))
+    }
+    #print(calFileName)
+    #Load data
+    ensembleFile <- nc_open(paste(ERA5dataFolder,calFileName,sep=""))
+    
+    Tairs <- ncvar_get(ensembleFile)-273 #Convert from Kelvin to C
+    
+    if(endDate==as.Date("2020-12-31") && stacked){
+      Tairs <- Tairs[,1,]
+    }
+    
+    timeHours <- ensembleFile$dim$time$vals #Hours since 1900-01-01 00:00:00.0
+    
+    ##Convert times to actual times
+    times <- as.POSIXct(timeHours*3600, origin = "1900-01-01",tz = "GMT")
+    
+    attributes(times)$tzone <- TZ_name
+    #Daily average
+    allDates <- lubridate::date(times)
+    dates <- seq(lubridate::date(times[5]),lubridate::date(times[length(times)]),"day")
+    TairsDaily <- matrix(nrow=10,ncol=length(dates))
+    print(dim(Tairs))
+    for(d in 1:length(dates)){
+      subTairs <- Tairs[,allDates==dates[d]]
+      TairsDaily[,d] <- apply(subTairs,MARGIN=1,mean)
+    }
+  }
+  ##Current Year (already downloaded)
+  ##Will fill in once I get the calibration done
+  return(TairsDaily)
+  
+}
+
 setwd('/projectnb/dietzelab/kiwheel/EFI_PhenologyChallenge_NEFI')
 source('compileCovariates.R')
 source('GEFS_Data.R')
@@ -84,7 +136,7 @@ for(s in 1:nrow(siteData)){
   URLs <- URL
   
   phenoData <- matrix(nrow=0,ncol=32)
-  print(paste("URLs:",URLs))
+  print(URLs)
   for(u in 1:length(URLs)){
     phenoDataSub <- download.phenocam(URLs[u])
     phenoData <- rbind(phenoData,phenoDataSub)

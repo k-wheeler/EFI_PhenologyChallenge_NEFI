@@ -13,7 +13,7 @@
 compileCovariates <- function(forecastStartDate,siteID){
   dates <- seq(as.Date("2021-01-01"),forecastStartDate,"day")
   
-  datTairEns <- load_ERA5_Tair_New(ERA5dataFolder=ERA5dataFolder,endDate=forecastStartDate,stacked=TRUE)
+  datTairEns <- load_ERA5_Tair_New2(ERA5dataFolder=ERA5dataFolder,endDate=forecastStartDate,stacked=TRUE)
   TairMu <- colMeans(datTairEns)
   TairPrec <- 1/(apply(X=datTairEns,FUN=sd,MARGIN = 2)**2)
   TairMu <- numeric()
