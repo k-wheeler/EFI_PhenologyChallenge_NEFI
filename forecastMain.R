@@ -117,6 +117,8 @@ b2 ~ dnorm(b2_mu,b2_prec)
 for(s in 1:nrow(siteData)){
   ##Load Calibration Data: 
   siteName <- as.character(siteData$siteName[s])
+  siteID <- strsplit(siteName,"[.]")[[1]][3]
+  print(siteID)
   
   calFileName <- paste("partial2_",siteName,"_EFI_ForecastChallenge_calibration_varBurn.RData",sep="")
   outputFileName <- paste(siteName,"_",forecastStartDate,"_EFI_ForecastChallenge_varBurn.RData",sep="")
