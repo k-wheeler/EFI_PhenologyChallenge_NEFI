@@ -16,8 +16,8 @@ compileCovariates <- function(forecastStartDate,siteID){
   datTairEns <- load_ERA5_Tair_New2(ERA5dataFolder=ERA5dataFolder,endDate=forecastStartDate,stacked=TRUE)
   TairMu <- colMeans(datTairEns)
   TairPrec <- 1/(apply(X=datTairEns,FUN=sd,MARGIN = 2)**2)
-  TairMu <- numeric()
-  TairPrec <- numeric()
+  #TairMu <- numeric()
+  #TairPrec <- numeric()
   
   ##GEFS for gap filling
   for(d in (length(TairMu)+1):length(dates)){
