@@ -17,7 +17,7 @@ GEFS_Data <- function(dte,siteID){
   source_url('https://github.com/eco4cast/neon4cast/blob/main/R/noaa.R?raw=TRUE')
   time_interval <- "1hr"
   cycle <- "00"
-  download_noaa_(siteID=siteID,interval=time_interval,date=dte,cycle=cycle,dir='data')
+  download_noaa(siteID=siteID,interval=time_interval,date=dte,cycle=cycle,dir='data')
   allMus <- matrix(nrow=30,ncol=35)
   for(i in 1:30){
     if(i<10){
