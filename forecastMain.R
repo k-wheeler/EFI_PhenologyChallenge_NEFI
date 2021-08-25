@@ -1,3 +1,8 @@
+setwd("/projectnb/dietzelab/kiwheel/EFI_PhenologyChallenge_NEFI") 
+myPaths <- .libPaths()   # get the paths
+myPaths <- c("/projectnb/dietzelab/kiwheel/Rlibrary/4.0.5",myPaths[2]) # switch them
+.libPaths(myPaths)  
+
 library(PhenoForecast)
 library(PhenologyBayesModeling)
 library(rjags)
@@ -51,6 +56,22 @@ load_ERA5_Tair_New2 <- function(lat="",long="",endDate="",calDatesT=TRUE,ERA5dat
       subTairs <- Tairs[,allDates==dates[d]]
       TairsDaily[,d] <- apply(subTairs,MARGIN=1,mean)
     }
+    Tairs <- ncvar_get(ensembleFile)-273 #Convert from Kelvin to C
+    
+    if(stacked){
+      Tairs <- Tairs[,2,]
+    }
+    
+    attributes(times)$tzone <- TZ_name
+    #Daily average
+    TairsDaily2 <- matrix(nrow=10,ncol=length(dates))
+    for(d in 1:length(dates)){
+      subTairs <- Tairs[,allDates==dates[d]]
+      TairsDaily2[,d] <- apply(subTairs,MARGIN=1,mean)
+    }
+    TairsDaily[is.na(TairsDaily)] <- TairsDaily2[is.na(TairsDaily)]
+    TairsDaily[,is.na(TairsDaily[1,])] <- TairsDaily[,seq(1,ncol(TairsDaily))[is.na(TairsDaily[1,])]-1] 
+
   }
   ##Current Year (already downloaded)
   ##Will fill in once I get the calibration done
@@ -58,7 +79,6 @@ load_ERA5_Tair_New2 <- function(lat="",long="",endDate="",calDatesT=TRUE,ERA5dat
   
 }
 
-setwd('/projectnb/dietzelab/kiwheel/EFI_PhenologyChallenge_NEFI')
 source('compileCovariates.R')
 source('GEFS_Data.R')
 #source('downloadERA5Temp.R')
@@ -79,6 +99,7 @@ startDate <- as.Date("2021-01-01")
 
 baseTemp <- 20
 nchain=5
+forecastLength <- 35
 
 variableNames <- c("p.PC","p.proc","x","b0","b1","b2","a","CDDtrigger")#,"Dtrigger")
 
@@ -88,7 +109,6 @@ model {
 for(i in 1:n){
 p[i] ~ dnorm(x[i],p.PC)
 }
-}
 
 #### Process Model
 for(i in 2:n){
@@ -96,7 +116,6 @@ Tair[i] ~ dnorm(TairMu[i],TairPrec[i])
 CDDs[i] <- ifelse(Tair[i]<baseTemp,CDDs[(i-1)]+baseTemp - Tair[i],CDDs[(i-1)])
 xmu[i] <- max(min(x[(i-1)] + ifelse(CDDs[i]>CDDtrigger,(b0 + (b1 * x[(i-1)]) + (b2 * x[(i-1)] ** 2)),a),x[1]),0)
 x[i] ~ dnorm(xmu[i],p.proc)
-}
 }
 
 #### Priors
@@ -125,7 +144,8 @@ for(s in 1:nrow(siteData)){
   
   lat <- as.numeric(siteData[s,2])
   long <- as.numeric(siteData[s,3])
-  startDate <- (as.Date(siteData[s,7]))
+  #startDate <- (as.Date(siteData[s,7]))
+  startDate <- as.Date("2021-01-01")
   URL <- as.character(siteData$URL[s])
   URL2 <- as.character(siteData$URL2[s])
   URL3 <- as.character(siteData$URL3[s])
@@ -154,7 +174,7 @@ for(s in 1:nrow(siteData)){
   p.old <- phenoData$gcc_90
   time.old <-  as.Date(phenoData$date)
   
-  days <- seq(as.Date(startDate),(as.Date(forecastStartDate)),"day")
+  days <- seq(as.Date(startDate),(as.Date(forecastStartDate))+forecastLength,"day")
   p <- rep(NA,length(days))
   
   for(i in 1:length(p.old)){
@@ -170,12 +190,16 @@ for(s in 1:nrow(siteData)){
   print("Finished loading met")
   
   ICsdat <- dat2[as.numeric(format(dat2$dates,"%j"))%in% seq(203,212),]
+  dat2$TairMu <- datTairs$TairMu
+  dat2$TairPrec <- datTairs$TairPrec
   dat2 <- dat2[as.numeric(format(dat2$dates,"%j"))%in% seq(213,365),]
   
-  nrowNum <- as.numeric(format(forecastStartDate,'%j')) -212
+  #nrowNum <- as.numeric(format(forecastStartDate,'%j')) -212 + forecastLength
+  nrowNum <- length(dat2$p)
   
-  dataFinal <- list(p=dat2$p,TairMu=datTairs$TairMu,TairPrec=datTairs$TairPrec,baseTemp=baseTemp)
+  dataFinal <- list(p=dat2$p,TairMu=dat2$TairMu,TairPrec=dat2$TairPrec,baseTemp=baseTemp)
   dataFinal$n <- nrowNum
+  ICs <- ICsdat$p
   mu <- mean(ICs,na.rm=TRUE)
   vr <- var(ICs,na.rm = TRUE)
   x1a <- (mu**2-mu**3-mu*vr)/(vr)
@@ -184,10 +208,10 @@ for(s in 1:nrow(siteData)){
   dataFinal$x1.b <- x1b
   
   load(calFileName)
+  out.burn <- partialOutput
   out.mat <- data.frame(as.matrix(out.burn$params))
-  
   dataFinal$CDDtrigger_mu <- mean(out.mat$CDDtrigger)
-  dataFinal$CDDtrigger_prec <- 1/var(out.mat$CDDtrigger)
+  dataFinal$CDDtrigger_prec <- 1/var(out.mat$CDDtrigger)*100
   dataFinal$a_mu <- mean(out.mat$a)
   dataFinal$a_prec <- 1/var(out.mat$a)
   dataFinal$b0_mu <- mean(out.mat$b0)
@@ -212,14 +236,15 @@ for(s in 1:nrow(siteData)){
                        b2=rnorm(1,mean(out.mat$b2),sd(out.mat$b2)))
   }
   
-  j.model   <- jags.model(file = textConnection(generalModel),
+  j.model   <- jags.model(file = textConnection(generalModelYear),
                           data = dataFinal,
                           inits = inits,
                           n.chains = nchain,
                           n.adapt = 1000)
   
   out.burn <- runForecastIter(j.model=j.model,variableNames=variableNames,
-                              baseNum = 10000,iterSize = 2000,effSize = 1000,partialFile = paste("partial_",outputFileName,sep=""))
+                              baseNum = 10000,iterSize = 10000,effSize = 5000,partialFile = paste("partial_",outputFileName,sep=""),
+                              maxIter = 200000)
   out.mat <- as.matrix(out.burn$params)
   thinAmount <- round(nrow(out.mat)/1000,digits=0)
   out.burn2 <- list()
