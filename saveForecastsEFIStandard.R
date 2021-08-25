@@ -11,7 +11,7 @@ for(s in 1:nrow(siteData)){
   ##Load Calibration Data: 
   siteName <- as.character(siteData$siteName[s])
   siteID <- strsplit(siteName,"[.]")[[1]][3]
-  
+  load(paste0("forecastOutputs/",siteName,"_",forecastStartDate,"_EFI_ForecastChallenge_varBurn.RData"))
   pred.mat <- as.matrix(out.burn$predict)
   
   output <- matrix(nrow=0,ncol=6)
@@ -25,7 +25,7 @@ for(s in 1:nrow(siteData)){
   }
 }
 
-csvFileName <- paste("phenology-",forecastStartDate,"-NEFIpheno.csv",sep="")
+csvFileName <- paste0("phenology-",forecastStartDate,"-NEFIpheno.csv")
 write.csv(file=csvFileName,output,row.names="FALSE")
 
 
