@@ -135,7 +135,7 @@ b2 ~ dnorm(b2_mu,b2_prec)
 "
 
 #for(s in 1:nrow(siteData)){
-foreach(i=1:nrow(siteData)) %dopar% {
+foreach(s=1:nrow(siteData)) %dopar% {
   ##Load Calibration Data: 
   siteName <- as.character(siteData$siteName[s])
   siteID <- strsplit(siteName,"[.]")[[1]][3]
