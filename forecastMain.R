@@ -138,9 +138,9 @@ for(s in 1:nrow(siteData)){
   siteID <- strsplit(siteName,"[.]")[[1]][3]
   print(siteID)
   
-  calFileName <- paste("partial2_",siteName,"_EFI_ForecastChallenge_calibration_varBurn.RData",sep="")
-  outputFileName <- paste(siteName,"_",forecastStartDate,"_EFI_ForecastChallenge_varBurn.RData",sep="")
-  ERA5dataFolder <- paste("/projectnb/dietzelab/kiwheel/ERA5/Data/",siteName,"/",sep="")
+  calFileName <- paste0("partial2_",siteName,"_EFI_ForecastChallenge_calibration_varBurn.RData")
+  outputFileName <- paste0("forecastOutputs/",siteName,"_",forecastStartDate,"_EFI_ForecastChallenge_varBurn.RData")
+  ERA5dataFolder <- paste0("/projectnb/dietzelab/kiwheel/ERA5/Data/",siteName,"/")
   
   lat <- as.numeric(siteData[s,2])
   long <- as.numeric(siteData[s,3])
