@@ -33,4 +33,6 @@ for(s in 1:nrow(siteData)){
 csvFileName <- paste0("phenology-",forecastStartDate,"-NEFIpheno.csv")
 write.csv(file=csvFileName,output,row.names=FALSE)
 
+neon4cast::submit(forecast_file = csvFileName)
+
 
