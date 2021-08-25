@@ -6,7 +6,7 @@ siteData <- read.csv("data/phenologyForecastSites2.csv",header=TRUE)
 siteData <- siteData[seq(13,20),]
 
 forecastStartDate <- Sys.Date()
-
+output <- matrix(nrow=0,ncol=6)
 for(s in 1:nrow(siteData)){
   ##Load Calibration Data: 
   siteName <- as.character(siteData$siteName[s])
@@ -15,7 +15,6 @@ for(s in 1:nrow(siteData)){
   load(paste0("forecastOutputs/",siteName,"_",forecastStartDate,"_EFI_ForecastChallenge_varBurn.RData"))
   pred.mat <- as.matrix(out.burn$predict)
   
-  output <- matrix(nrow=0,ncol=6)
   colnames(output) <- c("time","sideID","forecast","data_assimilation","statistic","gcc_90")
 
   colNums <- seq(ncol(pred.mat)-34,ncol(pred.mat))
