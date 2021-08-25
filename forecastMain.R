@@ -10,6 +10,7 @@ library(runjags)
 library(doParallel)
 library(ncdf4)
 library(devtools)
+library(doParallel)
 
 ##' Calculates cummulative Tair (within one year for one ensemble)
 ##'
@@ -85,6 +86,7 @@ source('GEFS_Data.R')
 #source('saveForecastsEFIStandard.R')
 
 n.cores <- 8
+registerDoParallel(cores=n.cores)
 
 ##Put output in EFI standard
 
@@ -132,7 +134,8 @@ b2 ~ dnorm(b2_mu,b2_prec)
 }
 "
 
-for(s in 1:nrow(siteData)){
+#for(s in 1:nrow(siteData)){
+foreach(i=1:nrow(siteData)) %dopar% {
   ##Load Calibration Data: 
   siteName <- as.character(siteData$siteName[s])
   siteID <- strsplit(siteName,"[.]")[[1]][3]
