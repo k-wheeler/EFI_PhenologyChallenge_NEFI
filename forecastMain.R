@@ -188,7 +188,8 @@ foreach(s=1:nrow(siteData)) %dopar% {
   years <- lubridate::year(days)
   
   dat2 <- data.frame(dates=days,years=years,months=months,p=p)
-  datTairs <- compileCovariates(forecastStartDate=forecastStartDate,siteID=siteID)
+  datTairs <- compileCovariates(forecastStartDate=forecastStartDate,siteID=siteID,
+                                ERA5dataFolder=ERA5dataFolder)
   
   print("Finished loading met")
   

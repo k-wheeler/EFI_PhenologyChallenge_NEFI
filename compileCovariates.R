@@ -4,13 +4,14 @@
 #'
 #' @param forecastStartDate 
 #' @param siteID 
+#' @param ERA5dataFolder
 #' @input PhenoForecast
 #'
 #' @return
 #' @export
 #'
 #' @examples
-compileCovariates <- function(forecastStartDate,siteID){
+compileCovariates <- function(forecastStartDate,siteID,ERA5dataFolder){
   dates <- seq(as.Date("2021-01-01"),forecastStartDate,"day")
   
   datTairEns <- load_ERA5_Tair_New2(ERA5dataFolder=ERA5dataFolder,endDate=forecastStartDate,stacked=TRUE)
