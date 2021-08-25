@@ -1,3 +1,8 @@
+setwd("/projectnb/dietzelab/kiwheel/EFI_PhenologyChallenge_NEFI") 
+myPaths <- .libPaths()   # get the paths
+myPaths <- c("/projectnb/dietzelab/kiwheel/Rlibrary/4.0.5",myPaths[2]) # switch them
+.libPaths(myPaths)  
+
 library('rjags')
 library('runjags')
 
@@ -15,7 +20,7 @@ for(s in 1:nrow(siteData)){
   load(paste0("forecastOutputs/",siteName,"_",forecastStartDate,"_EFI_ForecastChallenge_varBurn.RData"))
   pred.mat <- as.matrix(out.burn$predict)
   
-  colnames(output) <- c("time","sideID","forecast","data_assimilation","statistic","gcc_90")
+  colnames(output) <- c("time","siteID","forecast","data_assimilation","statistic","gcc_90")
 
   colNums <- seq(ncol(pred.mat)-34,ncol(pred.mat))
   
